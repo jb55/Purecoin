@@ -51,7 +51,7 @@ data Hash256 = Hash256 {-# UNPACK #-} !Word32
                        {-# UNPACK #-} !Word32 deriving (Eq, Ord)
 
 instance H.Hashable Hash256 where
-  hash (Hash256 _ _ _ _ _ _ _ h) = fromIntegral h
+  hashWithSalt salt (Hash256 _ _ _ _ _ _ _ h) = salt `H.hashWithSalt` h
 
 instance Show Hash256 where
  showsPrec _ (Hash256 a b c d e f g h) x =

@@ -1,3 +1,5 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 module Purecoin.Core.Hash
        ( Hash, hash0, hashBS, merkleHash
        , Hash160, hash160BS, sha256BS, ripemd160BS
@@ -7,6 +9,7 @@ import Data.Monoid (mempty, mappend)
 import Control.Applicative ((<$>))
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy (fromChunks)
+import Data.Hashable (Hashable)
 import qualified Data.Hashable as H
 import Data.NEList (NEList(..))
 import Purecoin.Digest.SHA256 (Hash256, sha256)
@@ -15,7 +18,7 @@ import Purecoin.Core.Serialize (Serialize, get, put, encode)
 import Purecoin.Utils (showHexByteStringLE)
 
 -- the Ord instance makes it useful as a key for a Map
-newtype Hash = Hash Hash256 deriving (Eq, Ord)
+newtype Hash = Hash Hash256 deriving (Eq, Ord, Hashable)
 
 instance Serialize Hash where
   get = Hash <$> get
@@ -25,9 +28,6 @@ instance Serialize Hash where
 -- The standard way of displaying a bitcoin hash is in little endian format.
 instance Show Hash where
   show = showHexByteStringLE . encode
-
-instance H.Hashable Hash where
-  hash (Hash h) = H.hash h
 
 -- Like all crap C programs, the 0 value is copted to have a sepearate special meaning.
 hash0 :: Hash

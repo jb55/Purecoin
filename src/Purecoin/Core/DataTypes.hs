@@ -123,7 +123,7 @@ data OutPoint = OutPoint { opHash :: !Hash
                          } deriving (Eq, Ord, Show)
 
 instance H.Hashable OutPoint where
-  hash (OutPoint h i) = H.combine (H.hash h) (fromIntegral i)
+  hashWithSalt salt (OutPoint h i) = salt `H.hashWithSalt` h `H.hashWithSalt` i
 
 instance Serialize OutPoint where
   get = do h <- get
